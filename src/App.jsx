@@ -3,8 +3,8 @@ import "./App.css";
 function App() {
   return (
     <model-viewer
-      src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-      alt="A 3D model"
+      src="/chair.glb"
+      alt="A chair"
       camera-controls
       ar
       ar-modes="webxr scene-viewer quick-look"
