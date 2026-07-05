@@ -8,8 +8,9 @@
 .viewer {
   position: relative;
   width: 100vw;
-  /* dvh = dynamic viewport height: accounts for the phone's browser bars */
-  height: 100dvh;
+  /* svh = small viewport height: reserves space for the browser's toolbar,
+     so the bottom menu stays above Safari's bar instead of hidden behind it */
+  height: 100svh;
 }
 
 model-viewer {
