@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 
 // The data list — the single source of truth for the furniture.
@@ -18,59 +18,53 @@ function App() {
   // Read state → find the selected item's data.
   const selected = FURNITURE.find((item) => item.id === selectedId);
 
+  // A handle to the <model-viewer> element so we can ask it about AR.
+  const modelRef = useRef(null);
+
+  // Feature detection: assume AR works, let the device tell us if it doesn't.
+  const [arSupported, setArSupported] = useState(true);
+
+  useEffect(() => {
+    const el = modelRef.current;
+    if (!el) return;
+    // model-viewer knows if AR is available once the model has loaded.
+    const check = () => setArSupported(el.canActivateAR);
+    el.addEventListener("load", check);
+    return () => el.removeEventListener("load", check);
+  }, []);
+
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+    <div className="viewer">
       <model-viewer
+        ref={modelRef}
         src={selected.glb}
         alt={selected.name}
         camera-controls
         ar
         ar-modes="webxr scene-viewer quick-look"
-        style={{ width: "100%", height: "100%" }}
       >
-        <button
-          slot="ar-button"
-          style={{
-            position: "absolute",
-            top: "16px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            padding: "12px 20px",
-            borderRadius: "999px",
-            border: "none",
-            background: "black",
-            color: "white",
-            fontSize: "16px",
-          }}
-        >
+        <button slot="ar-button" className="ar-button">
           View in your room 👋
         </button>
       </model-viewer>
 
+      {/* Fallback: only shown when the device can't do AR (e.g. desktop). */}
+      {!arSupported && (
+        <div className="fallback">
+          AR isn’t available on this device — open this page on your phone to
+          place furniture in your room. You can still spin the model here.
+        </div>
+      )}
+
       {/* The menu — rendered FROM the data list, not hardcoded. */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "24px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          gap: "8px",
-        }}
-      >
+      <div className="menu">
         {FURNITURE.map((item) => (
           <button
             key={item.id}
             onClick={() => setSelectedId(item.id)}
-            style={{
-              padding: "10px 16px",
-              borderRadius: "999px",
-              border: "none",
-              cursor: "pointer",
-              background: item.id === selectedId ? "black" : "white",
-              color: item.id === selectedId ? "white" : "black",
-              fontSize: "14px",
-            }}
+            className={
+              item.id === selectedId ? "menu-item active" : "menu-item"
+            }
           >
             {item.name}
           </button>
