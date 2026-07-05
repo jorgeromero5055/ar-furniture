@@ -61,8 +61,8 @@ model-viewer {
   display: flex;
   gap: 10px;
   padding: 16px;
-  /* keep clear of the iPhone home-bar */
-  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  /* lift the menu above Safari's floating bottom toolbar */
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* hide scrollbar (Firefox) */
